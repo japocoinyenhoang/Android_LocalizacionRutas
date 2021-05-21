@@ -8,6 +8,8 @@ import androidx.fragment.app.FragmentActivity;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -18,6 +20,8 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 
@@ -68,11 +72,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng punto2 = new LatLng(40.294082836956015, -3.7462009409056054);
         LatLng punto3 = new LatLng(40.3014299511739, -3.736156155997091);
 
+
+
         // añadir el point de la localizacion
-        mMap.addMarker(new MarkerOptions().position(punto1).title("Arroyo Culebro"));
+        mMap.addMarker(new MarkerOptions().position(punto1).title("Arroyo Culebro").icon(BitmapDescriptorFactory.fromResource(R.drawable.metro)));
         mMap.addMarker(new MarkerOptions().position(punto2).title("Conservatorio"));
         mMap.addMarker(new MarkerOptions().position(punto3).title("Alonso de Mendoza"));
 
+        int height= 90;
+        int width = 130;
+        BitmapDrawable bitmapDrawable = (BitmapDrawable) getBaseContext().getDrawable(R.drawable.metro);
+        Bitmap icon = bitmapDrawable.getBitmap();
+        Bitmap iconmin = Bitmap.createScaledBitmap(icon, width, height, true);
         //sin incluir zoom
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(punto1));
 
@@ -106,6 +117,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 "Longitud: " + location.getLongitude(), Toast.LENGTH_LONG).show();
             }
         };
+
+        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,0, locationListener);
         // Add a marker in Sydney and move the camera
        /* LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
