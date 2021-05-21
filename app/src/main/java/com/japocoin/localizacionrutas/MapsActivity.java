@@ -1,7 +1,11 @@
 package com.japocoin.localizacionrutas;
 
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -23,6 +27,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+
+        getPermisoLocalizacion();
+    }
+
+    public void getPermisoLocalizacion() {
+        //preguntamos al usuario si concede permiso de localizacion
+        int permiso = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
+        if(permiso == PackageManager.PERMISSION_DENIED){
+            if(ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+            }else {
+                ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+            }
+
+        }
     }
 
     /**
@@ -38,9 +57,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
 
+        //objetos con coordenadas
+        LatLng punto1 = new LatLng(40.28965716750577, -3.756484012634787);
+        LatLng punto2 = new LatLng(40.294082836956015, -3.7462009409056054);
+        LatLng punto3 = new LatLng(40.3014299511739, -3.736156155997091);
+
+        // añadir el point de la localizacion
+        mMap.addMarker(new MarkerOptions().position(punto1).title("Arroyo Culebro"));
+        mMap.addMarker(new MarkerOptions().position(punto2).title("Conservatorio"));
+        mMap.addMarker(new MarkerOptions().position(punto3).title("Alonso de Mendoza"));
+
+        //sin incluir zoom
+        //mMap.moveCamera(CameraUpdateFactory.newLatLng(punto1));
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(punto2, 13));
+
+        //cambiar el estilo del mapa
+        mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+
         // Add a marker in Sydney and move the camera
-        LatLng sydney = new LatLng(-34, 151);
+       /* LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));*/
     }
 }
