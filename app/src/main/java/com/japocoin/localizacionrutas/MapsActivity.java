@@ -28,6 +28,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    LocationManager locationManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //preguntamos al usuario si concede permiso de localizacion
         int permiso = ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION);
         if (permiso == PackageManager.PERMISSION_DENIED) {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
 
             } else {
                 ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
@@ -73,17 +74,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         LatLng punto3 = new LatLng(40.3014299511739, -3.736156155997091);
 
 
-
-        // añadir el point de la localizacion
-        mMap.addMarker(new MarkerOptions().position(punto1).title("Arroyo Culebro").icon(BitmapDescriptorFactory.fromResource(R.drawable.metro)));
-        mMap.addMarker(new MarkerOptions().position(punto2).title("Conservatorio"));
-        mMap.addMarker(new MarkerOptions().position(punto3).title("Alonso de Mendoza"));
-
         int height= 90;
         int width = 130;
         BitmapDrawable bitmapDrawable = (BitmapDrawable) getBaseContext().getDrawable(R.drawable.metro);
         Bitmap icon = bitmapDrawable.getBitmap();
         Bitmap iconmin = Bitmap.createScaledBitmap(icon, width, height, true);
+
+
+        // añadir el point de la localizacion
+        mMap.addMarker(new MarkerOptions().position(punto1).title("Arroyo Culebro").icon(BitmapDescriptorFactory.fromBitmap(iconmin)));
+        mMap.addMarker(new MarkerOptions().position(punto2).title("Conservatorio").icon(BitmapDescriptorFactory.fromBitmap(iconmin)));
+        mMap.addMarker(new MarkerOptions().position(punto3).title("Alonso de Mendoza").icon(BitmapDescriptorFactory.fromBitmap(iconmin)));
+
+
         //sin incluir zoom
         //mMap.moveCamera(CameraUpdateFactory.newLatLng(punto1));
 
@@ -108,7 +111,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMyLocationEnabled(true);
 
 
-        LocationManager locationManager = (LocationManager) MapsActivity.this.getSystemService(Context.LOCATION_SERVICE);
+      locationManager = (LocationManager) MapsActivity.this.getSystemService(Context.LOCATION_SERVICE);
         LocationListener locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(@NonNull Location location) {
@@ -118,7 +121,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         };
 
-        locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0,0, locationListener);
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0,0, locationListener);
         // Add a marker in Sydney and move the camera
        /* LatLng sydney = new LatLng(-34, 151);
         mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
